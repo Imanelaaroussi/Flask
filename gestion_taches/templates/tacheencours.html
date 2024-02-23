@@ -4,6 +4,18 @@
 
 {% block content %}
 
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <div class="alert {% if category == 'error' %}alert-danger{% elif category == 'success' %}alert-success{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
 <style>
     body {
         font-family: Arial, sans-serif;

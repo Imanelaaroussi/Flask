@@ -3,6 +3,18 @@
 {% block title %} Toutes les Tâches : {% endblock %}
 
 {% block content %}
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert {% if category == 'error' %}alert-danger{% elif category == 'success' %}alert-success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -78,10 +90,11 @@
 </style>
 <h1>Tâches en cours</h1>
 
-<!-- Button to export the JSON file -->
-<a href="{{ url_for('export_json') }}" class="export-button">Exporter JSON</a> 
-
-<!-- List all tasks from taches.json -->
+<!-- Bouton pour exporter toutes les tâches au format JSON -->
+<form action="{{ url_for('export_tasks_json') }}" method="get">
+    <button type="submit" class="btn btn-primary">Exporter les tâches au format JSON</button>
+</form>
+<br>
 <ul>
     <table>
         <thead>
@@ -103,6 +116,7 @@
                 <td>
                     <a href="{{ url_for('edit_task', titre=tache['titre']) }}">Éditer</a>
                     <a href="#" onclick="deleteTask('{{ tache['titre'] }}'); return false;">Supprimer</a>
+                    
 
                 </td>
             </tr>
@@ -110,4 +124,24 @@
         </tbody>
     </table>
 </ul>
+<script>
+    function deleteTask(titre) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+            fetch(`/delete/${titre}`, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Mettre à jour la liste des tâches sur la page
+                    window.location.reload();
+                } else {
+                    console.error('Erreur lors de la suppression de la tâche');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression de la tâche:', error);
+            });
+        }
+    }
+</script>
 {% endblock %}

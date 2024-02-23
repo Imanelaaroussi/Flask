@@ -94,21 +94,10 @@
         "description": "abc",
         "statut": "en cours",
         "employe_assigne": {
-            "nom": "Durand",
-            "prenom": "Jean",
-            "email": "jean.Durand@test.com",
-            "icone": "avatar1.png"
-        }
-    },
-    {
-        "titre": "testajout",
-        "description": "testajout",
-        "statut": "en cours",
-        "employe_assigne": {
-            "nom": "Martin",
-            "prenom": "Jacques",
-            "email": "jaques.martin@test.com",
-            "icone": "avatar2.png"
+            "nom": "wwwwwwwwww",
+            "prenom": "www",
+            "email": "ccc@nnnn",
+            "icone": "avatar3.png"
         }
     }
 ]

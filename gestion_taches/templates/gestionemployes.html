@@ -1,0 +1,86 @@
+{% extends "index.html" %}
+
+{% block title %} Toutes les Tâches : {% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert {% if category == 'error' %}alert-danger{% elif category == 'success' %}alert-success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .avatar {
+        max-width: 50px;
+        max-height: 50px;
+    }
+</style>
+
+<h1>Liste des Employés :</h1>
+<!-- Lien pour exporter les employés au format JSON -->
+<form action="{{ url_for('export_employees') }}" method="get">
+    <button type="submit" class="btn btn-primary">Exporter les employés au format JSON</button>
+</form>
+<br>
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Avatar</th>
+            <th>Action</th>
+            <th>Tâches en Cours</th>
+            <th>Tâches Assignées</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employe in employes %}
+    <tr>
+        <td>{{ employe.nom }}</td>
+        <td>{{ employe.prenom }}</td>
+        <td>{{ employe.email }}</td>
+        <td><img class="icone" src="{{ url_for('static', filename='icones/' + employe.icone) }}" alt="Icone" style="max-width: 30px; max-height: 30px;"></td>
+        
+
+        <td>
+            <a href="{{ url_for('edit_employe', nom=employe.nom) }}" class="btn-edit">Editer</a>
+            <a href="{{ url_for('delete_employe', nom=employe.nom) }}" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet employé?');">Supprimer</a>
+        
+        </td>
+    
+
+        
+        <td>{{ employe.taches_en_cours }}</td>
+        <td>{{ employe.taches_total }}</td>
+    </tr>
+        {% endfor %}
+    </tbody>
+   
+
+{% endblock %}

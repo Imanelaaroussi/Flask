@@ -1,0 +1,86 @@
+{% extends "index.html" %}
+
+{% block title %} Créer un nouvel employé : {% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert {% if category == 'error' %}alert-danger{% elif category == 'success' %}alert-success{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+    
+    h1 {
+        margin-bottom: 20px;
+    }
+    
+    form {
+        width: 50%;
+        margin: 0 auto;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    input[type="text"], input[type="email"], select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+    
+    input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+    }
+    
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+
+<h1>Créer un nouvel employé</h1>
+
+<form action="{{ url_for('add_employe') }}" method="post">
+    <label for="nom">Nom:</label>
+    <input type="text" id="nom" name="nom" required><br>
+
+    <label for="prenom">Prénom:</label>
+    <input type="text" id="prenom" name="prenom" required><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+
+    <label for="icone">Icône:</label>
+    <select id="icone" name="icone" required>
+        <option value="" disabled selected>Choisir une icône</option>
+        <option value="avatar1.png">Icône 1</option>
+        <option value="avatar2.png">Icône 2</option>
+        <option value="avatar3.png">Icône 3</option>
+        <!-- Ajoutez plus d'options pour les icônes disponibles -->
+    </select><br>
+
+    <input type="submit" value="Créer">
+</form>
+
+
+{% endblock %}
