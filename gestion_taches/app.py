@@ -135,6 +135,7 @@ with open('employes.json', 'r') as file:
 def create_task_form():
     return render_template('ajouttache.html', employes=employes)
 
+
 @app.route("/ajouttache", methods=['POST'])
 def create_task():
     # Récupérer les détails de la tâche depuis le formulaire
@@ -143,12 +144,28 @@ def create_task():
     statut = request.form['statut']
     employe_nom = request.form['employe_assigne']
 
+    # Charger les données des tâches depuis le fichier JSON
+    with open('taches.json', 'r') as file:
+        tasks = json.load(file)
+
     # Rechercher l'employé dans la liste des employés
     employe_details = None
     for employe in employes:
         if employe['nom'] == employe_nom:
             employe_details = employe
             break
+
+    # Vérifier le nombre de tâches en cours pour l'employé sélectionné
+    ongoing_tasks_count = 0
+    for task in tasks:
+        # Assurez-vous que task['employe_assigne'] est un dictionnaire
+        if isinstance(task['employe_assigne'], dict) and task['employe_assigne']['nom'] == employe_nom and task['statut'] == 'en cours':
+            ongoing_tasks_count += 1
+
+    # Si l'employé a déjà trois tâches en cours, afficher un message d'erreur
+    if ongoing_tasks_count >= 2:
+        flash("Cet employé a déjà trois tâches en cours et ne peut pas en recevoir plus !", 'error')
+        return redirect(url_for('touteslestaches'))  # Rediriger vers la page de création de tâche
 
     # Créer un dictionnaire pour la nouvelle tâche
     new_task = {
@@ -164,10 +181,10 @@ def create_task():
     }
 
     # Ajouter la nouvelle tâche à la liste des tâches
-    with open('taches.json', 'r+') as file:
-        tasks = json.load(file)
-        tasks.append(new_task)
-        file.seek(0)
+    tasks.append(new_task)
+
+    # Enregistrer les données mises à jour dans le fichier JSON
+    with open('taches.json', 'w') as file:
         json.dump(tasks, file, indent=4)
 
     # Afficher un message de confirmation
@@ -175,6 +192,9 @@ def create_task():
 
     # Rediriger vers la page de toutes les tâches
     return render_template('ajouttache.html', employe=employe)
+
+
+
 
 
 
@@ -308,8 +328,7 @@ def add_employe():
 
         flash('Nouvel employé créé avec succès!', 'success')
         
-        # Mettre à jour la liste des employés avant de rediriger
-        return redirect(url_for('liste_employes'))
+        return render_template('gestionemployes.html', employes=employes)
     else:
         return render_template('ajoutemploye.html', employes=employes)
 

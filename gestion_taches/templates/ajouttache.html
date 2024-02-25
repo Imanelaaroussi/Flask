@@ -1,6 +1,6 @@
 {% extends "index.html" %}
 
-{% block title %} Créer une nouvelle tâche : {% endblock %}
+{% block title %} Créer une nouvelle tâche {% endblock %}
 
 {% block content %}
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -12,6 +12,8 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+
+<!-- Déplacer le style en haut pour une meilleure organisation -->
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -53,27 +55,45 @@
     input[type="submit"]:hover {
         background-color: #45a049;
     }
-    
 </style>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var statutSelect = document.getElementById("statut");
-        var employeAssigneField = document.getElementById("employe_assigne");
+        var employeAssigneeField = document.getElementById("employe_assigne");
 
         statutSelect.addEventListener("change", function() {
             if (statutSelect.value === "non assignee") {
-                employeAssigneField.disabled = true;
+                employeAssigneeField.disabled = true;
             } else {
-                employeAssigneField.disabled = false;
+                employeAssigneeField.disabled = false;
             }
         });
 
-        // Désactiver le champ si le statut initial est "non assigné"
         if (statutSelect.value === "non assignee") {
-            employeAssigneField.disabled = true;
+            employeAssigneeField.disabled = true;
         }
+
+        var form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            var statut = document.getElementById("statut").value;
+            if (statut === "en cours") {
+                var employeAssignee = document.getElementById("employe_assigne").value;
+                var ongoingTasksCount = document.querySelectorAll('[data-employe="' + employeAssignee + '"][data-statut="en cours"]').length;
+                if (ongoingTasksCount >= 3) {
+                    event.preventDefault(); // Empêcher la soumission du formulaire
+                    alert("Cet employé a déjà trois tâches en cours et ne peut pas en recevoir plus !");
+                    // Réinitialiser les valeurs des champs du formulaire
+                    document.getElementById("titre").value = "";
+                    document.getElementById("description").value = "";
+                    document.getElementById("statut").value = "non assignee";
+                    document.getElementById("employe_assigne").value = "";
+                }
+            }
+        });
     });
 </script>
+
 
 <h1>Créer une nouvelle tâche</h1>
 
@@ -94,16 +114,22 @@
     <label for="employe_assigne">Employé assigné:</label>
     <select id="employe_assigne" name="employe_assigne" required>
         <option value="" disabled selected>Choisir un employé</option>
-        <!-- Populate dropdown menu with employee names from employes.json -->
+        <!-- Populate dropdown menu with employee names from employes.json, but filter out employees with 3 ongoing tasks -->
         {% for employe in employes %}
-        <option value="{{ employe.nom }}">{{ employe.nom }} {{ employe.prenom }}</option>
+            {% set ongoing_tasks_count = 0 %}
+            {% for tache in taches %}
+                {% if tache.employe_assigne == employe.nom and tache.statut == 'en cours' %}
+                    {% set ongoing_tasks_count = ongoing_tasks_count + 1 %}
+                {% endif %}
+            {% endfor %}
+            {% if ongoing_tasks_count < 3 %}
+                <option value="{{ employe.nom }}">{{ employe.nom }} {{ employe.prenom }}</option>
+            {% endif %}
         {% endfor %}
     </select><br><br>
+    
 
     <input type="submit" value="Créer">
 </form>
-
-
-
 
 {% endblock %}

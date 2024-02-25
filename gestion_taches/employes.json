@@ -24,16 +24,10 @@
         "icone": "avatar3.png"
     },
     {
-        "nom": "j",
-        "prenom": "kk",
-        "email": "hhhh@gmail.com",
-        "icone": "avatar1.png"
-    },
-    {
         "nom": "eeeee",
-        "prenom": "eeee",
+        "prenom": "eeeetest",
         "email": "eee@hh",
-        "icone": "avatar2.png"
+        "icone": "avatar1.png"
     },
     {
         "nom": "employe4",
@@ -48,9 +42,9 @@
         "icone": "avatar1.png"
     },
     {
-        "nom": "testfinal",
-        "prenom": "testfinal",
-        "email": "imane@testfinal",
+        "nom": "testemploye",
+        "prenom": "employe",
+        "email": "email@test.com",
         "icone": "avatar3.png"
     }
 ]
